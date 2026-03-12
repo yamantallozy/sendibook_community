@@ -1,0 +1,659 @@
+import React, { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  Building2,
+  CheckCircle2,
+  ChevronDown,
+  Globe2,
+  Handshake,
+  Languages,
+  Mail,
+  MapPin,
+  Menu,
+  ShieldCheck,
+  Truck,
+  X,
+} from "lucide-react";
+
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Partners", href: "#partners" },
+  { label: "Vision", href: "#vision" },
+  { label: "FAQ", href: "#faq" },
+  { label: "Contact", href: "#contact" },
+];
+
+const trustPoints = [
+  "Built as a sister brand under the Sendebad ecosystem",
+  "Focused on authentic Islamic books in Scandinavian languages",
+  "Clear, partnership-first model for publishers and authors",
+  "Licensed digital products only",
+  "Country-aware storefront for Sweden, Denmark, and Norway",
+];
+
+const problemCards = [
+  {
+    title: "Language gap",
+    text: "Many Muslims in Scandinavia struggle to find Islamic books in Swedish, Danish, or Norwegian, even when they want to learn in the language they use every day.",
+    icon: Languages,
+  },
+  {
+    title: "Limited distribution",
+    text: "Publishers and authors with valuable Islamic content often lack a focused way to reach readers in Nordic markets with a local-language-first experience.",
+    icon: Globe2,
+  },
+  {
+    title: "Trust matters",
+    text: "Readers want authentic content. Partners want a serious, respectful platform. Both need clarity, professionalism, and purpose.",
+    icon: ShieldCheck,
+  },
+];
+
+const howItWorks = [
+  {
+    title: "Local storefront by market",
+    text: "Visitors in Sweden, Denmark, and Norway are guided toward the most relevant books for their country and language, while still being able to browse other available languages easily.",
+    icon: MapPin,
+  },
+  {
+    title: "Physical books through partners",
+    text: "Publishers, authors, or distributors can send physical books directly through dropshipping or other agreed fulfillment models.",
+    icon: Truck,
+  },
+  {
+    title: "Licensed digital access",
+    text: "Digital Islamic books are offered only through proper licensing and controlled delivery methods agreed with each partner.",
+    icon: BookOpen,
+  },
+  {
+    title: "Collaboration first",
+    text: "Operational details such as handling time, packaging, returns, pricing, and territory are discussed clearly before launch.",
+    icon: Handshake,
+  },
+];
+
+const partnerBenefits = [
+  "Reach Muslim readers in Sweden, Denmark, and Norway",
+  "Present titles in a focused local-language environment",
+  "Choose from dropshipping, wholesale, licensing, or hybrid models",
+  "Work with a team already rooted in Islamic books",
+  "Start with a small pilot and grow from real demand",
+  "Build long-term visibility in underserved language niches",
+];
+
+const audienceCards = [
+  {
+    eyebrow: "For Publishers & Authors",
+    title: "A serious collaboration opportunity",
+    text: "SendiBook gives Islamic publishers, authors, and distributors a cleaner path into Nordic markets through a focused, respectful storefront built around language and trust.",
+  },
+  {
+    eyebrow: "For Readers & Communities",
+    title: "Islamic knowledge in the language of daily life",
+    text: "We want families, students, converts, and communities to find beneficial Islamic books in the language they understand best, without confusion or clutter.",
+  },
+];
+
+const partnerModels = [
+  {
+    title: "Dropshipping",
+    text: "The publisher, author, or distributor sends the book directly to the customer. Terms and workflow are discussed together before launch.",
+  },
+  {
+    title: "Wholesale",
+    text: "Titles can also be supplied through a wholesale arrangement when that fits the catalog and logistics better.",
+  },
+  {
+    title: "Licensed digital",
+    text: "Properly licensed PDFs or eBooks can be distributed through secure customer access, based on agreed rights and territory.",
+  },
+  {
+    title: "Hybrid partnership",
+    text: "Different titles may use different models. We are open to practical setups that protect quality, trust, and long-term collaboration.",
+  },
+];
+
+const faqItems = [
+  {
+    q: "What is SendiBook?",
+    a: "SendiBook is a Scandinavian Islamic bookstore and distribution platform focused on authentic Islamic books in Swedish, Danish, Norwegian, and English.",
+  },
+  {
+    q: "How is SendiBook related to Sendebad?",
+    a: "SendiBook is being developed as a sister brand under the Sendebad ecosystem, building on existing experience in Islamic books while focusing on local-language access in Nordic markets.",
+  },
+  {
+    q: "Which countries do you focus on first?",
+    a: "The first launch focus is Sweden, Denmark, and Norway.",
+  },
+  {
+    q: "Which languages do you focus on?",
+    a: "The core focus is Swedish, Danish, Norwegian, and English. The experience is designed to stay clean and relevant for each market.",
+  },
+  {
+    q: "Do you work with publishers and authors?",
+    a: "Yes. We want to collaborate with publishers, authors, distributors, and Islamic organizations who have authentic Islamic content relevant to Scandinavian readers.",
+  },
+  {
+    q: "How does dropshipping work?",
+    a: "In a dropshipping setup, the partner sends physical books directly to the customer. Operational details such as handling time, packaging, tracking, and returns are agreed clearly before launch.",
+  },
+  {
+    q: "Do you sell digital Islamic books?",
+    a: "Yes, but only when the content is properly licensed for distribution in the agreed markets and languages.",
+  },
+  {
+    q: "Can readers browse other languages too?",
+    a: "Yes. The storefront prioritizes what is most relevant locally, while still allowing readers to browse other available languages without cluttering the main experience.",
+  },
+];
+
+function SectionHeading({ eyebrow, title, text, center = false }) {
+  return (
+    <div className={center ? "max-w-3xl mx-auto text-center" : "max-w-3xl"}>
+      {eyebrow ? (
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700 mb-3">
+          {eyebrow}
+        </p>
+      ) : null}
+      <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-stone-900 leading-tight">
+        {title}
+      </h2>
+      {text ? (
+        <p className="mt-5 text-base md:text-lg leading-8 text-stone-600">{text}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function Stat({ value, label }) {
+  return (
+    <div className="rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-sm">
+      <div className="text-3xl md:text-4xl font-semibold tracking-tight text-stone-900">{value}</div>
+      <div className="mt-2 text-sm md:text-base text-stone-600">{label}</div>
+    </div>
+  );
+}
+
+export default function SendiBookWebsiteV1() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState(0);
+  const year = useMemo(() => new Date().getFullYear(), []);
+
+  return (
+    <div className="min-h-screen bg-[#f7f5f1] text-stone-900 selection:bg-emerald-200 selection:text-stone-900">
+      <div className="absolute inset-x-0 top-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="mx-auto h-[34rem] max-w-7xl bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.14),_transparent_55%)]" />
+      </div>
+
+      <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-[#f7f5f1]/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-8">
+          <a href="#home" className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-stone-900 text-white shadow-sm">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold tracking-tight">SendiBook</div>
+              <div className="text-xs text-stone-500">A Sendebad sister brand</div>
+            </div>
+          </a>
+
+          <nav className="hidden items-center gap-8 md:flex">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-stone-600 transition hover:text-stone-900"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex">
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Partner with us
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          <button
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white md:hidden"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {mobileOpen ? (
+          <div className="border-t border-stone-200 bg-[#f7f5f1] px-6 py-5 md:hidden">
+            <div className="flex flex-col gap-4">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm font-medium text-stone-700"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <a
+                href="#contact"
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-stone-900 px-5 py-3 text-sm font-medium text-white"
+                onClick={() => setMobileOpen(false)}
+              >
+                Partner with us
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        ) : null}
+      </header>
+
+      <main>
+        <section id="home" className="mx-auto max-w-7xl px-6 pb-16 pt-16 md:px-8 md:pb-24 md:pt-24">
+          <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800">
+                <ShieldCheck className="h-4 w-4" />
+                Built under the Sendebad ecosystem
+              </div>
+              <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight text-stone-900 md:text-7xl leading-[1.02]">
+                Authentic Islamic books in the languages people live and learn in.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-600 md:text-xl">
+                SendiBook is a Scandinavian Islamic bookstore and partnership platform focused on
+                making Islamic knowledge more accessible in Swedish, Danish, Norwegian, and English.
+                Built as a sister brand under Sendebad, it is designed to serve readers locally and
+                help publishers reach Nordic markets with clarity and trust.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <a
+                  href="#contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-4 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  Partner with us
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href="#about"
+                  className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-6 py-4 text-sm font-medium text-stone-800 transition hover:border-stone-400 hover:bg-stone-50"
+                >
+                  Explore the vision
+                </a>
+              </div>
+
+              <div className="mt-10 flex flex-wrap items-center gap-3 text-sm text-stone-600">
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Sweden</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Denmark</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Norway</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Swedish</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Danish</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">Norwegian</span>
+                <span className="rounded-full bg-white px-4 py-2 border border-stone-200">English</span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="rounded-[2rem] border border-stone-200 bg-white p-5 shadow-[0_20px_80px_-30px_rgba(28,25,23,0.35)]">
+                <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-4 md:p-5">
+                  <div className="flex items-center justify-between rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm">
+                    <div>
+                      <div className="font-medium text-stone-900">Country</div>
+                      <div className="text-stone-500">Sweden</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-stone-900">Languages</div>
+                      <div className="text-stone-500">Swedish · English</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid gap-4">
+                    {[
+                      {
+                        title: "Islamic books for Scandinavian readers",
+                        desc: "A local-language-first experience with authentic content and a calm, trusted presentation.",
+                      },
+                      {
+                        title: "Flexible partner fulfillment",
+                        desc: "Physical books can be sent by publishers, authors, or distributors through agreed dropshipping workflows.",
+                      },
+                      {
+                        title: "Licensed digital access",
+                        desc: "Digital products are offered through proper rights, controlled delivery, and transparent collaboration.",
+                      },
+                    ].map((card, idx) => (
+                      <div key={idx} className="rounded-3xl border border-stone-200 bg-white p-5">
+                        <div className="flex items-start gap-4">
+                          <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                            <CheckCircle2 className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-base font-semibold tracking-tight text-stone-900">
+                              {card.title}
+                            </h3>
+                            <p className="mt-2 text-sm leading-7 text-stone-600">{card.desc}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -left-4 hidden rounded-3xl border border-stone-200 bg-white p-4 shadow-lg md:block">
+                <div className="text-xs uppercase tracking-[0.18em] text-stone-500">Positioning</div>
+                <div className="mt-2 text-sm font-medium text-stone-800">
+                  Islamic mission + Scandinavian clarity + digital trust
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-14 grid gap-4 md:grid-cols-3">
+            <Stat value="3" label="Launch markets across Scandinavia" />
+            <Stat value="4" label="Core languages in the first phase" />
+            <Stat value="100%" label="Authentic editions and licensed digital focus" />
+          </div>
+        </section>
+
+        <section className="border-y border-stone-200 bg-white/70">
+          <div className="mx-auto max-w-7xl px-6 py-14 md:px-8">
+            <SectionHeading
+              eyebrow="Trust"
+              title="A serious foundation for a meaningful mission"
+              text="SendiBook is designed to feel clear, respectful, and dependable from the first interaction. It grows from existing experience in Islamic books while focusing on underserved local-language access in Nordic markets."
+            />
+            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              {trustPoints.map((point) => (
+                <div key={point} className="rounded-3xl border border-stone-200 bg-white p-5 text-sm leading-7 text-stone-700 shadow-sm">
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-stone-900 text-white">
+                    <CheckCircle2 className="h-4 w-4" />
+                  </div>
+                  {point}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+          <SectionHeading
+            eyebrow="About SendiBook"
+            title="Built to close the gap between authentic Islamic knowledge and the languages people actually use"
+            text="Across Scandinavia, many Muslims want to learn, teach, and grow through Islamic content in the language closest to their everyday lives. Yet local-language access is still limited. SendiBook exists to help change that with thoughtful curation, trusted partnerships, and a calmer local bookstore experience."
+          />
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {problemCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <div key={card.title} className="rounded-[2rem] border border-stone-200 bg-white p-7 shadow-sm">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-5 text-xl font-semibold tracking-tight text-stone-900">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-stone-600">{card.text}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-14 grid gap-8 lg:grid-cols-2">
+            <div className="rounded-[2rem] border border-stone-200 bg-stone-900 p-8 text-white shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Why language matters</p>
+              <h3 className="mt-4 text-2xl md:text-3xl font-semibold tracking-tight">
+                Understanding grows when knowledge is available in a familiar language.
+              </h3>
+              <p className="mt-4 text-sm md:text-base leading-8 text-stone-200">
+                This is not only about buying books. It is about helping parents teach at home,
+                helping converts learn with confidence, helping students access clearer resources,
+                and helping communities strengthen their connection to beneficial knowledge through
+                understandable, authentic content.
+              </p>
+            </div>
+            <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Brand relationship</p>
+              <h3 className="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-stone-900">
+                A focused local-language brand within a wider Islamic book ecosystem.
+              </h3>
+              <p className="mt-4 text-sm md:text-base leading-8 text-stone-600">
+                SendiBook is developed as a sister brand under Sendebad. That gives it a stronger
+                foundation than a standalone concept, while allowing it to stay focused on Swedish,
+                Danish, Norwegian, and English without overlapping with Arabic-first channels.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white border-y border-stone-200">
+          <div className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+            <SectionHeading
+              eyebrow="How it works"
+              title="A simple model built around local relevance, authentic content, and practical collaboration"
+              text="SendiBook is designed to market and present Islamic books with care, while giving partners flexible ways to supply titles to Scandinavian readers."
+            />
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
+              {howItWorks.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="rounded-[2rem] border border-stone-200 bg-stone-50 p-7">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-stone-900 border border-stone-200">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mt-5 text-xl font-semibold tracking-tight text-stone-900">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-stone-600">{item.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section id="partners" className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+          <SectionHeading
+            eyebrow="For partners"
+            title="A thoughtful way to bring Islamic titles into Scandinavian markets"
+            text="We want publishers, authors, distributors, and Islamic organizations to feel that SendiBook is credible, practical, and worth discussing. The model is intentionally flexible so the right structure can be agreed for each catalog or title group."
+          />
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+            <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <h3 className="text-2xl font-semibold tracking-tight text-stone-900">Why partner with SendiBook</h3>
+              </div>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {partnerBenefits.map((benefit) => (
+                  <div key={benefit} className="rounded-3xl border border-stone-200 bg-stone-50 p-4 text-sm leading-7 text-stone-700">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-700" />
+                      <span>{benefit}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-stone-200 bg-stone-900 p-8 text-white shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Pilot model</p>
+              <h3 className="mt-4 text-2xl md:text-3xl font-semibold tracking-tight">
+                Start small, align clearly, then grow from performance.
+              </h3>
+              <p className="mt-4 text-sm md:text-base leading-8 text-stone-200">
+                We would typically begin with a small pilot selection of titles and a clearly agreed
+                workflow. The goal is to build confidence, understand demand, and create a sustainable
+                long-term partnership rather than rush into a vague setup.
+              </p>
+              <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-5 text-sm leading-7 text-stone-200">
+                Example starting point: 5–15 titles in Swedish, Danish, Norwegian, or English with agreed market coverage, pricing, fulfillment details, and commercial terms.
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {partnerModels.map((model) => (
+              <div key={model.title} className="rounded-[2rem] border border-stone-200 bg-white p-7 shadow-sm">
+                <h4 className="text-lg font-semibold tracking-tight text-stone-900">{model.title}</h4>
+                <p className="mt-3 text-sm leading-7 text-stone-600">{model.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="vision" className="border-y border-stone-200 bg-[linear-gradient(180deg,#faf8f4,white)]">
+          <div className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+            <SectionHeading
+              eyebrow="Vision"
+              title="A future where beneficial Islamic knowledge is easier to find in the language closest to people’s lives"
+              text="SendiBook is part of a longer vision: a multilingual Islamic book ecosystem that helps readers across Europe access authentic content with more clarity, dignity, and ease."
+              center
+            />
+
+            <div className="mt-14 grid gap-6 md:grid-cols-2">
+              {audienceCards.map((card) => (
+                <div key={card.title} className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">{card.eyebrow}</p>
+                  <h3 className="mt-4 text-2xl font-semibold tracking-tight text-stone-900">{card.title}</h3>
+                  <p className="mt-4 text-sm md:text-base leading-8 text-stone-600">{card.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" className="mx-auto max-w-5xl px-6 py-20 md:px-8 md:py-28">
+          <SectionHeading
+            eyebrow="FAQ"
+            title="Clear answers for readers, publishers, and partners"
+            text="This first version answers the main questions people are likely to have when discovering the brand or considering collaboration."
+            center
+          />
+
+          <div className="mt-12 space-y-4">
+            {faqItems.map((item, idx) => {
+              const open = openFaq === idx;
+              return (
+                <div key={item.q} className="rounded-[1.75rem] border border-stone-200 bg-white shadow-sm">
+                  <button
+                    className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left"
+                    onClick={() => setOpenFaq(open ? -1 : idx)}
+                  >
+                    <span className="text-base md:text-lg font-medium tracking-tight text-stone-900">{item.q}</span>
+                    <ChevronDown className={`h-5 w-5 shrink-0 text-stone-500 transition ${open ? "rotate-180" : ""}`} />
+                  </button>
+                  {open ? (
+                    <div className="px-6 pb-6 text-sm md:text-base leading-8 text-stone-600">{item.a}</div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section id="contact" className="border-t border-stone-200 bg-white">
+          <div className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="rounded-[2rem] bg-stone-900 p-8 text-white shadow-sm">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Contact & collaboration</p>
+                <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">
+                  Let’s build access to Islamic knowledge together.
+                </h2>
+                <p className="mt-5 text-sm md:text-base leading-8 text-stone-200">
+                  Whether you are a publisher, author, distributor, mosque, organization, or early
+                  supporter of the vision, SendiBook is built for serious and respectful conversations.
+                </p>
+
+                <div className="mt-8 space-y-4 text-sm text-stone-200">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <span>partnerships@sendibook.com</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
+                      <Globe2 className="h-5 w-5" />
+                    </div>
+                    <span>Sweden · Denmark · Norway</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] border border-stone-200 bg-[#faf8f4] p-8 shadow-sm">
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">Name</label>
+                    <input
+                      className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 outline-none ring-0 transition focus:border-stone-500"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">Email</label>
+                    <input
+                      className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 outline-none ring-0 transition focus:border-stone-500"
+                      placeholder="name@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">Organization</label>
+                    <input
+                      className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 outline-none ring-0 transition focus:border-stone-500"
+                      placeholder="Publisher, author, mosque, distributor..."
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">Interest</label>
+                    <select className="w-full rounded-2xl border border-stone-300 bg-white px-4 py-3 outline-none transition focus:border-stone-500">
+                      <option>Partnership inquiry</option>
+                      <option>Publisher / author inquiry</option>
+                      <option>General contact</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <label className="mb-2 block text-sm font-medium text-stone-700">Message</label>
+                  <textarea
+                    rows={6}
+                    className="w-full rounded-[1.5rem] border border-stone-300 bg-white px-4 py-3 outline-none transition focus:border-stone-500"
+                    placeholder="Tell us about your titles, catalog, collaboration idea, or questions."
+                  />
+                </div>
+
+                <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs leading-6 text-stone-500">
+                    This form is a first-version placeholder for outreach and partnership interest.
+                  </p>
+                  <button className="inline-flex items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-4 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg">
+                    Send inquiry
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section> 
+      </main>
+
+      <footer className="border-t border-stone-200 bg-[#f7f5f1]">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-stone-600 md:flex-row md:items-center md:justify-between md:px-8">
+          <div>
+            <span className="font-medium text-stone-900">SendiBook</span> — A Sendebad sister brand focused on local-language Islamic books in Scandinavia.
+          </div>
+          <div>© {year} SendiBook. All rights reserved.</div>
+        </div>
+      </footer>
+    </div>
+  );
+}
