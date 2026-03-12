@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
+import emailjs from '@emailjs/browser';
 import { ArrowRight, BookOpen, Building2, CheckCircle2, ChevronDown, Globe2, Handshake, Languages, Mail, MapPin, Menu, ShieldCheck, Truck, X } from "lucide-react";
 
 const icons = { Languages, Globe2, ShieldCheck, MapPin, Truck, BookOpen, Handshake };
@@ -53,6 +54,10 @@ export default function App() {
   const [locale, setLocale] = useState("en");
   const [menuOpen, setMenuOpen] = useState(false);
   const [faqOpen, setFaqOpen] = useState(0);
+  const formRef = useRef();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+
   const t = useMemo(() => copy[locale] ?? copy.en, [locale]);
   const c = chrome[locale] ?? chrome.en;
   const localizedMarkets = marketNames[locale] ?? marketNames.en;
@@ -66,6 +71,37 @@ export default function App() {
     visionCards: t.visionCards ?? copy.en.visionCards,
     faqItems: t.faqItems ?? copy.en.faqItems,
     form: t.form ?? copy.en.form,
+  };
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    // YOU WILL NEED TO REPLACE THESE WITH YOUR ACTUAL EMAILJS CREDENTIALS
+    // Create an account at emailjs.com, add a service, create a template, and get your public key.
+    const serviceId = 'YOUR_SERVICE_ID';
+    const templateId = 'YOUR_TEMPLATE_ID';
+    const publicKey = 'YOUR_PUBLIC_KEY';
+
+    emailjs
+      .sendForm(serviceId, templateId, formRef.current, {
+        publicKey: publicKey,
+      })
+      .then(
+        () => {
+          setIsSubmitting(false);
+          setSubmitStatus('success');
+          formRef.current.reset();
+          // Hide success message after 5 seconds
+          setTimeout(() => setSubmitStatus(null), 5000);
+        },
+        (error) => {
+          console.error('FAILED...', error.text);
+          setIsSubmitting(false);
+          setSubmitStatus('error');
+        },
+      );
   };
 
   return (
@@ -116,7 +152,7 @@ export default function App() {
         <section id="partners" className="px-6 pb-16 sm:px-8 lg:px-12"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.92fr]"><div>{heading(localized.partners)}<div className="mt-10 grid gap-4">{localized.benefits.map((benefit) => <div key={benefit} className="flex gap-3 rounded-[1.5rem] border border-slate-200 bg-white/85 px-5 py-4"><CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-700" /><p className="text-sm leading-7 text-slate-700">{benefit}</p></div>)}</div></div><div className="rounded-[1.75rem] bg-slate-950 p-8 text-white"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">{c.pilot}</p><h3 className="mt-4 text-2xl font-semibold">{localized.pilot[0]}</h3><p className="mt-4 text-sm leading-7 text-slate-300">{localized.pilot[1]}</p><div className="mt-8 grid gap-4 sm:grid-cols-2">{c.modelItems.map((item) => <div key={item} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5"><p className="text-sm font-medium text-white">{item}</p></div>)}</div></div></div></section>
         <section id="vision" className="px-6 pb-16 sm:px-8 lg:px-12"><div className="mx-auto max-w-7xl">{heading(localized.vision)}<div className="mt-10 grid gap-5 lg:grid-cols-2">{localized.visionCards.map(([eyebrow, title, text]) => <article key={title} className="rounded-[1.75rem] border border-slate-200 bg-white/85 p-8"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-800">{eyebrow}</p><h3 className="mt-4 text-2xl font-semibold text-slate-950">{title}</h3><p className="mt-4 text-sm leading-7 text-slate-600">{text}</p></article>)}</div></div></section>
         <section id="faq" className="px-6 pb-16 sm:px-8 lg:px-12"><div className="mx-auto max-w-7xl">{heading(localized.faq)}<div className="mt-10 grid gap-4">{localized.faqItems.map((item, index) => <FaqItem key={item[0]} active={faqOpen === index} item={item} onToggle={() => setFaqOpen((v) => (v === index ? -1 : index))} />)}</div></div></section>
-        <section id="contact" className="px-6 pb-20 sm:px-8 lg:px-12"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]"><div className="rounded-[2rem] bg-slate-950 p-8 text-white sm:p-10"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">{localized.contact[0]}</p><h2 className="mt-4 text-3xl font-semibold tracking-tight">{localized.contact[1]}</h2><p className="mt-5 text-base leading-7 text-slate-300">{localized.contact[2]}</p><div className="mt-8 grid gap-4"><div className="flex items-start gap-3"><MapPin className="mt-1 h-5 w-5 text-amber-300" /><div><p className="text-sm font-medium text-white">{c.markets}</p><p className="text-sm text-slate-300">{localized.markets}</p></div></div><div className="flex items-start gap-3"><Mail className="mt-1 h-5 w-5 text-amber-300" /><div><p className="text-sm font-medium text-white">{c.email}</p><p className="text-sm text-slate-300">partners@sendibook.com</p></div></div></div></div><form className="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.35)] sm:p-10"><div className="grid gap-5 md:grid-cols-2"><label className="grid gap-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[0]}</span><input className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[0]} /></label><label className="grid gap-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[1]}</span><input className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[1]} /></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[2]}</span><input className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[2]} /></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[3]}</span><select className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500">{localized.form.options.map((option) => <option key={option}>{option}</option>)}</select></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[4]}</span><textarea className="min-h-40 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[4]} /></label></div><p className="mt-5 text-sm text-slate-500">{localized.form.note}</p><button className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white" type="button">{localized.form.send}<ArrowRight className="h-4 w-4" /></button></form></div></section>
+        <section id="contact" className="px-6 pb-20 sm:px-8 lg:px-12"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]"><div className="rounded-[2rem] bg-slate-950 p-8 text-white sm:p-10"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">{localized.contact[0]}</p><h2 className="mt-4 text-3xl font-semibold tracking-tight">{localized.contact[1]}</h2><p className="mt-5 text-base leading-7 text-slate-300">{localized.contact[2]}</p><div className="mt-8 grid gap-4"><div className="flex items-start gap-3"><MapPin className="mt-1 h-5 w-5 text-amber-300" /><div><p className="text-sm font-medium text-white">{c.markets}</p><p className="text-sm text-slate-300">{localized.markets}</p></div></div><div className="flex items-start gap-3"><Mail className="mt-1 h-5 w-5 text-amber-300" /><div><p className="text-sm font-medium text-white">{c.email}</p><p className="text-sm text-slate-300">partners@sendibook.com</p></div></div></div></div><form ref={formRef} onSubmit={sendEmail} className="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.35)] sm:p-10"><div className="grid gap-5 md:grid-cols-2"><label className="grid gap-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[0]}</span><input required name="user_name" className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[0]} /></label><label className="grid gap-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[1]}</span><input required type="email" name="user_email" className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[1]} /></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[2]}</span><input name="organization" className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[2]} /></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[3]}</span><select name="interest" className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500">{localized.form.options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label><label className="grid gap-2 md:col-span-2"><span className="text-sm font-medium text-slate-700">{localized.form.labels[4]}</span><textarea required name="message" className="min-h-40 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-slate-500" placeholder={localized.form.placeholders[4]} /></label></div>{submitStatus === 'success' ? <div className="mt-5 rounded-xl bg-emerald-50 p-4 border border-emerald-200"><p className="text-sm text-emerald-800">Your message has been sent successfully. We will be in touch soon.</p></div> : submitStatus === 'error' ? <div className="mt-5 rounded-xl bg-red-50 p-4 border border-red-200"><p className="text-sm text-red-800">There was an error sending your message. Please try again later.</p></div> : <p className="mt-5 text-sm text-slate-500">{localized.form.note}</p>}<button disabled={isSubmitting} className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white disabled:opacity-70 disabled:cursor-not-allowed" type="submit">{isSubmitting ? 'Sending...' : localized.form.send}{!isSubmitting && <ArrowRight className="h-4 w-4" />}</button></form></div></section>
       </main>
 
       <footer className="border-t border-slate-200 px-6 py-8 sm:px-8 lg:px-12"><div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>{localized.footer}</p><p>SendiBook © 2026</p></div></footer>
